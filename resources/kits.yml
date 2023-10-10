@@ -1,0 +1,16 @@
+default:
+  diamond_sword:
+    enchantments:
+      sharpness: 5
+  diamond_helmet:
+    enchantments:
+      protection: 4
+  diamond_chestplate:
+    enchantments:
+      protection: 4
+  diamond_leggings:
+    enchantments:
+      protection: 4
+  diamond_boots:
+    enchantments:
+      protection: 4
