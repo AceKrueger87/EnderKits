@@ -37,14 +37,14 @@ class KitCommand extends Command implements PluginOwned {
 
             if (isset($kitConfig["default"])) {
                 $kitItems = $kitConfig["default"];
-                
+
                 $items = [];
                 foreach ($kitItems as $itemName => $itemData) {
                     $item = StringToItemParser::getInstance()->parse($itemName);
                     if ($item === null) {
                         $item = VanillaItems::AIR();
                     }
-                    
+
                     if (isset($itemData["enchantments"])) {
                         foreach ($itemData["enchantments"] as $enchantmentName => $level) {
                             $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
@@ -54,9 +54,16 @@ class KitCommand extends Command implements PluginOwned {
                             }
                         }
                     }
+                    if (isset($itemData["quantity"])) {
+                        $item->setCount((int) $itemData["quantity"]);
+                    }
+                    if (isset($itemData["name"])) {
+                        $item->setCustomName(TextFormat::colorize($itemData["name"]));
+                    }
+
                     $items[] = $item;
                 }
-                
+
                 $sender->getInventory()->setContents($items);
                 $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
             } else {
