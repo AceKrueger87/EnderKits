@@ -11,5 +11,6 @@ class Main extends PluginBase {
 
     public function onEnable(): void {
         $this->getServer()->getCommandMap()->register("kit", new Command\KitCommand($this));
+        $this->saveResource("kits.yml");
     }
 }
