@@ -34,18 +34,17 @@ class KitCommand extends Command implements PluginOwned {
             $helmet = VanillaItems::DIAMOND_HELMET();
             $helmet->setCustomName("Kit Helmet");
             
-            $protectionEnchantment = Enchantment::get(Enchantment::PROTECTION);
+            $protectionEnchantment = Enchantment::getEnchantment(Enchantment::PROTECTION);
             $helmet->addEnchantment(new EnchantmentInstance($protectionEnchantment, 1));
             
             $chestplate = VanillaItems::DIAMOND_CHESTPLATE();
             $chestplate->setCustomName("Kit Chestplate");
             
-            $unbreakingEnchantment = Enchantment::get(Enchantment::UNBREAKING);
+            $unbreakingEnchantment = Enchantment::getEnchantment(Enchantment::UNBREAKING);
             $chestplate->addEnchantment(new EnchantmentInstance($unbreakingEnchantment, 1));
 
             $leggings = VanillaItems::DIAMOND_LEGGINGS();
             $leggings->setCustomName("Kit Leggings");
-
 
             $boots = VanillaItems::DIAMOND_BOOTS();
             $boots->setCustomName("Kit Boots");
