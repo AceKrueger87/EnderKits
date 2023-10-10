@@ -13,6 +13,7 @@ use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\Enchantment;
+use pocketmine\item\enchantment\VanillaEnchantments;
 
 class KitCommand extends Command implements PluginOwned {
 
@@ -34,13 +35,13 @@ class KitCommand extends Command implements PluginOwned {
             $helmet = VanillaItems::DIAMOND_HELMET();
             $helmet->setCustomName("Kit Helmet");
             
-            $protectionEnchantment = Enchantment::getEnchantment(Enchantment::PROTECTION);
+            $protectionEnchantment = VanillaEnchantments::PROTECTION();
             $helmet->addEnchantment(new EnchantmentInstance($protectionEnchantment, 1));
             
             $chestplate = VanillaItems::DIAMOND_CHESTPLATE();
             $chestplate->setCustomName("Kit Chestplate");
             
-            $unbreakingEnchantment = Enchantment::getEnchantment(Enchantment::UNBREAKING);
+            $unbreakingEnchantment = VanillaEnchantments::UNBREAKING();
             $chestplate->addEnchantment(new EnchantmentInstance($unbreakingEnchantment, 1));
 
             $leggings = VanillaItems::DIAMOND_LEGGINGS();
