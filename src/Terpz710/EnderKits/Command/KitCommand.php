@@ -11,9 +11,9 @@ use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
 use pocketmine\item\Item;
 use pocketmine\utils\TextFormat;
-use pocketmine\item\enchantment\StringToEnchantmentParser;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
+use pocketmine\item\enchantment\StringToEnchantmentParser;
 use pocketmine\item\enchantment\EnchantmentInstance;
 
 class KitCommand extends Command implements PluginOwned {
@@ -36,40 +36,31 @@ class KitCommand extends Command implements PluginOwned {
             $kitConfig = yaml_parse_file($this->plugin->getDataFolder() . "kits.yml");
 
             if (isset($kitConfig["default"])) {
-                $kitItems = $kitConfig["default"];
+                $kit = $kitConfig["default"];
 
                 $items = [];
-                foreach ($kitItems as $slot => $itemString) {
-                    $itemParts = explode(":", $itemString);
-                    $itemName = array_shift($itemParts);
-                    $item = StringToItemParser::getInstance()->parse($itemName);
-                    if ($item === null) {
-                        $item = VanillaItems::AIR();
+                foreach ($kit["items"] as $itemString) {
+                    $item = StringToItemParser::getInstance()->parse($itemString);
+                    if ($item !== null) {
+                        $items[] = $item;
                     }
-
-                    while (count($itemParts) >= 2) {
-                        $enchantmentName = array_shift($itemParts);
-                        $enchantmentLevel = array_shift($itemParts);
-                        $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
-                        if ($enchantment !== null) {
-                            $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $enchantmentLevel);
-                            $item->addEnchantment($enchantmentInstance);
-                        }
-                    }
-
-                    if (isset($kitItems[$slot])) {
-                        if (isset($kitItems[$slot]["quantity"])) {
-                            $item->setCount((int) $kitItems[$slot]["quantity"]);
-                        }
-                        if (isset($kitItems[$slot]["name"])) {
-                            $item->setCustomName(TextFormat::colorize($kitItems[$slot]["name"]));
-                        }
-                    }
-
-                    $items[] = $item;
                 }
 
+                $armor = [
+                    "helmet" => $kit["helmet"] ?? "",
+                    "chestplate" => $kit["chestplate"] ?? "",
+                    "leggings" => $kit["leggings"] ?? "",
+                    "boots" => $kit["boots"] ?? ""
+                ];
+
                 $sender->getInventory()->setContents($items);
+                foreach ($armor as $slot => $armorItemString) {
+                    $armorItem = StringToItemParser::getInstance()->parse($armorItemString);
+                    if ($armorItem !== null) {
+                        $sender->getArmorInventory()->setItem(Item::getArmorSlot($slot), $armorItem);
+                    }
+                }
+
                 $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
             } else {
                 $sender->sendMessage(TextFormat::RED . "The 'default' kit is not configured.");
