@@ -47,7 +47,7 @@ class KitCommand extends Command implements PluginOwned {
                         foreach ($itemData["enchantments"] as $enchantmentName => $level) {
                             $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
                             if ($enchantment !== null) {
-                                $item->addEnchantment($enchantment, $level);
+                                $item->addEnchantment($enchantment);
                             }
                         }
                     }
