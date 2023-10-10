@@ -14,6 +14,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\item\enchantment\StringToEnchantmentParser;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
+use pocketmine\item\enchantment\EnchantmentInstance;
 
 class KitCommand extends Command implements PluginOwned {
 
@@ -43,11 +44,13 @@ class KitCommand extends Command implements PluginOwned {
                     if ($item === null) {
                         $item = VanillaItems::AIR();
                     }
+                    
                     if (isset($itemData["enchantments"])) {
                         foreach ($itemData["enchantments"] as $enchantmentName => $level) {
                             $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
                             if ($enchantment !== null) {
-                                $item->addEnchantment($enchantment);
+                                $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
+                                $item->addEnchantment($enchantmentInstance);
                             }
                         }
                     }
