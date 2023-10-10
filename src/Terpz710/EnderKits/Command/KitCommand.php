@@ -57,7 +57,15 @@ class KitCommand extends Command implements PluginOwned {
                 foreach ($armor as $slot => $armorItemString) {
                     $armorItem = StringToItemParser::getInstance()->parse($armorItemString);
                     if ($armorItem !== null) {
-                        $sender->getArmorInventory()->setItem(Item::getArmorSlot($slot), $armorItem);
+                        if ($slot === "helmet") {
+                            $sender->getArmorInventory()->setHelmet($armorItem);
+                        } elseif ($slot === "chestplate") {
+                            $sender->getArmorInventory()->setChestplate($armorItem);
+                        } elseif ($slot === "leggings") {
+                            $sender->getArmorInventory()->setLeggings($armorItem);
+                        } elseif ($slot === "boots") {
+                            $sender->getArmorInventory()->setBoots($armorItem);
+                        }
                     }
                 }
 
