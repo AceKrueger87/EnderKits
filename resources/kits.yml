@@ -1,16 +1,32 @@
+# kits.yml
+
 default:
   diamond_sword:
+    name: "&bDiamond Sword"
+    quantity: 1
     enchantments:
       sharpness: 5
+  diamond_pickaxe:
+    name: "&aDiamond Pickaxe"
+    quantity: 1
+    enchantments:
+      efficiency: 5
+      unbreaking: 3
   diamond_helmet:
-    enchantments:
-      protection: 4
+    name: "&eDiamond Helmet"
+    quantity: 1
   diamond_chestplate:
-    enchantments:
-      protection: 4
+    name: "&eDiamond Chestplate"
+    quantity: 1
   diamond_leggings:
-    enchantments:
-      protection: 4
+    name: "&eDiamond Leggings"
+    quantity: 1
   diamond_boots:
-    enchantments:
-      protection: 4
+    name: "&eDiamond Boots"
+    quantity: 1
+  golden_apple:
+    name: "&cGod Apple"
+    quantity: 5
+  arrow:
+    name: "&7Arrow"
+    quantity: 64
