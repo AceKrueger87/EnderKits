@@ -9,11 +9,11 @@ use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
-use pocketmine\item\VanillaItems;
+use pocketmine\item\Item;
 use pocketmine\utils\TextFormat;
-use pocketmine\item\enchantment\EnchantmentInstance;
-use pocketmine\item\enchantment\Enchantment;
-use pocketmine\item\enchantment\VanillaEnchantments;
+use pocketmine\item\enchantment\StringToEnchantmentParser;
+use pocketmine\item\StringToItemParser;
+use pocketmine\item\VanillaItems;
 
 class KitCommand extends Command implements PluginOwned {
 
@@ -32,29 +32,33 @@ class KitCommand extends Command implements PluginOwned {
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
         if ($sender instanceof Player) {
-            $helmet = VanillaItems::DIAMOND_HELMET();
-            $helmet->setCustomName("Kit Helmet");
-            
-            $protectionEnchantment = VanillaEnchantments::PROTECTION();
-            $helmet->addEnchantment(new EnchantmentInstance($protectionEnchantment, 1));
-            
-            $chestplate = VanillaItems::DIAMOND_CHESTPLATE();
-            $chestplate->setCustomName("Kit Chestplate");
-            
-            $unbreakingEnchantment = VanillaEnchantments::UNBREAKING();
-            $chestplate->addEnchantment(new EnchantmentInstance($unbreakingEnchantment, 1));
+            $kitConfig = yaml_parse_file($this->plugin->getDataFolder() . "kits.yml");
 
-            $leggings = VanillaItems::DIAMOND_LEGGINGS();
-            $leggings->setCustomName("Kit Leggings");
-
-            $boots = VanillaItems::DIAMOND_BOOTS();
-            $boots->setCustomName("Kit Boots");
-
-            $sword = VanillaItems::DIAMOND_SWORD();
-            $sword->setCustomName("Kit Sword");
-
-            $sender->getInventory()->addItem($helmet, $chestplate, $leggings, $boots, $sword);
-            $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
+            if (isset($kitConfig["default"])) {
+                $kitItems = $kitConfig["default"];
+                
+                $items = [];
+                foreach ($kitItems as $itemName => $itemData) {
+                    $item = StringToItemParser::getInstance()->parse($itemName);
+                    if ($item === null) {
+                        $item = VanillaItems::AIR();
+                    }
+                    if (isset($itemData["enchantments"])) {
+                        foreach ($itemData["enchantments"] as $enchantmentName => $level) {
+                            $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
+                            if ($enchantment !== null) {
+                                $item->addEnchantment($enchantment->setLevel($level));
+                            }
+                        }
+                    }
+                    $items[] = $item;
+                }
+                
+                $sender->getInventory()->setContents($items);
+                $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
+            } else {
+                $sender->sendMessage(TextFormat::RED . "The 'default' kit is not configured.");
+            }
         } else {
             $sender->sendMessage("This command can only be used in-game.");
         }
