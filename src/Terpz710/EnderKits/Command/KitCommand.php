@@ -11,7 +11,8 @@ use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
 use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat;
-use Terpz710\EnderKits\Main;
+use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\item\enchantment\Enchantment;
 
 class KitCommand extends Command implements PluginOwned {
 
@@ -32,12 +33,23 @@ class KitCommand extends Command implements PluginOwned {
         if ($sender instanceof Player) {
             $helmet = VanillaItems::DIAMOND_HELMET();
             $helmet->setCustomName("Kit Helmet");
+            
+            $protectionEnchantment = Enchantment::get(Enchantment::PROTECTION);
+            $helmet->addEnchantment(new EnchantmentInstance($protectionEnchantment, 1));
+            
             $chestplate = VanillaItems::DIAMOND_CHESTPLATE();
             $chestplate->setCustomName("Kit Chestplate");
+            
+            $unbreakingEnchantment = Enchantment::get(Enchantment::UNBREAKING);
+            $chestplate->addEnchantment(new EnchantmentInstance($unbreakingEnchantment, 1));
+
             $leggings = VanillaItems::DIAMOND_LEGGINGS();
             $leggings->setCustomName("Kit Leggings");
+
+
             $boots = VanillaItems::DIAMOND_BOOTS();
             $boots->setCustomName("Kit Boots");
+
             $sword = VanillaItems::DIAMOND_SWORD();
             $sword->setCustomName("Kit Sword");
 
