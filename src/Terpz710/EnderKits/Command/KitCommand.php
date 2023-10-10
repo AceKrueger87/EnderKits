@@ -44,13 +44,13 @@ class KitCommand extends Command implements PluginOwned {
                         $item = VanillaItems::AIR();
                     }
                     if (isset($itemData["enchantments"])) {
-                        foreach ($itemData["enchantments"] as $enchantmentName => $level) {
-                            $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
-                            if ($enchantment !== null) {
-                                $item->addEnchantment($enchantment->getMaxLevel($level));
-                            }
-                        }
+                    foreach ($itemData["enchantments"] as $enchantmentName => $level) {
+                    $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
+                    if ($enchantment !== null) {
+                    $item->addEnchantment($enchantment->getId(), $level);
                     }
+                }
+            }
                     $items[] = $item;
                 }
                 
