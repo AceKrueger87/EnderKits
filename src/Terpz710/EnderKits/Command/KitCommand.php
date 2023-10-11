@@ -9,12 +9,12 @@ use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
-use pocketmine\item\Item;
-use pocketmine\utils\TextFormat;
-use pocketmine\item\enchantment\StringToEnchantmentParser;
 use pocketmine\item\StringToItemParser;
-use pocketmine\item\VanillaItems;
+use pocketmine\item\StringToEnchantmentParser;
 use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\utils\TextFormat;
+use pocketmine\utils\MainLogger;
+use pocketmine\utils\yaml\Yaml;
 
 class KitCommand extends Command implements PluginOwned {
 
@@ -33,57 +33,50 @@ class KitCommand extends Command implements PluginOwned {
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
         if ($sender instanceof Player) {
-            $kitConfig = yaml_parse_file($this->plugin->getDataFolder() . "kits.yml");
+            $kitConfig = $this->loadKitConfig();
 
-            if (isset($kitConfig["default"])) {
-                $armorInventory = $sender->getArmorInventory();
-                $extraArmor = [];
+            if ($kitConfig === null) {
+                $sender->sendMessage(TextFormat::RED . "Kit configuration is missing or invalid.");
+                return true;
+            }
 
-                foreach (["helmet", "chestplate", "leggings", "boots"] as $armorType) {
-                    if (isset($kitConfig["default"]["armor"][$armorType])) {
-                        $armorData = $kitConfig["default"]["armor"][$armorType];
-                        $item = StringToItemParser::getInstance()->parse($armorData["item"]);
+            foreach ($kitConfig as $kitName => $kitData) {
+                $this->applyKit($sender, $kitData);
 
-                        if ($item !== null) {
-                            if (isset($armorData["enchantments"])) {
-                                foreach ($armorData["enchantments"] as $enchantmentName => $level) {
-                                    $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
-                                    if ($enchantment !== null) {
-                                        $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
-                                        $item->addEnchantment($enchantmentInstance);
-                                    }
-                                }
-                            }
+                $sender->sendMessage(TextFormat::GREEN . "You received the kit '$kitName'!");
+            }
+        } else {
+            $sender->sendMessage("This command can only be used in-game.");
+        }
+        return true;
+    }
 
-                            $currentArmorItem = $armorInventory->{"get" . ucfirst($armorType)}();
-                            if ($currentArmorItem->isNull()) {
-                                $armorInventory->{"set" . ucfirst($armorType)}($item);
-                            } else {
-                                $extraArmor[] = $item;
-                            }
-
-                            if (isset($armorData["name"])) {
-                                $item->setCustomName(TextFormat::colorize($armorData["name"]));
-                            }
-                        }
-                    }
+    private function loadKitConfig() {
+        $configPath = $this->plugin->getDataFolder() . "kits.yml";
+        if (file_exists($configPath)) {
+            try {
+                $config = Yaml::parseFile($configPath);
+                if ($config !== null && is_array($config)) {
+                    return $config['kits'];
                 }
+            } catch (\Throwable $e) {
+                MainLogger::getLogger()->error("Error while parsing kits.yml: " . $e->getMessage());
+            }
+        }
+        return [];
+    }
 
-                $sender->getInventory()->addItem(...$extraArmor);
+    private function applyKit(Player $player, array $kitData) {
+        if (isset($kitData["armor"])) {
+            $armorInventory = $player->getArmorInventory();
+            foreach (["helmet", "chestplate", "leggings", "boots"] as $armorType) {
+                if (isset($kitData["armor"][$armorType])) {
+                    $armorData = $kitData["armor"][$armorType];
+                    $item = StringToItemParser::getInstance()->parse($armorData["item"]);
 
-                if (isset($kitConfig["default"]["items"])) {
-                    $items = [];
-                    $inventory = $sender->getInventory();
-
-                    foreach ($kitConfig["default"]["items"] as $itemName => $itemData) {
-                        $item = StringToItemParser::getInstance()->parse($itemName);
-
-                        if ($item === null) {
-                            $item = VanillaItems::AIR();
-                        }
-
-                        if (isset($itemData["enchantments"])) {
-                            foreach ($itemData["enchantments"] as $enchantmentName => $level) {
+                    if ($item !== null) {
+                        if (isset($armorData["enchantments"])) {
+                            foreach ($armorData["enchantments"] as $enchantmentName => $level) {
                                 $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
                                 if ($enchantment !== null) {
                                     $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
@@ -92,26 +85,54 @@ class KitCommand extends Command implements PluginOwned {
                             }
                         }
 
-                        if (isset($itemData["quantity"])) {
-                            $item->setCount((int) $itemData["quantity"]);
-                        }
-                        if (isset($itemData["name"])) {
-                            $item->setCustomName(TextFormat::colorize($itemData["name"]));
+                        $currentArmorItem = $armorInventory->{"get" . ucfirst($armorType)}();
+                        if ($currentArmorItem->isNull()) {
+                            $armorInventory->{"set" . ucfirst($armorType)}($item);
+                        } else {
+                            $extraArmor[] = $item;
                         }
 
-                        $items[] = $item;
+                        if (isset($armorData["name"])) {
+                            $item->setCustomName(TextFormat::colorize($armorData["name"]));
+                        }
                     }
+                }
+            }
+            $player->getInventory()->addItem(...$extraArmor);
+        }
 
-                    $inventory->addItem(...$items);
+        if (isset($kitData["items"])) {
+            $items = [];
+            $inventory = $player->getInventory();
+
+            foreach ($kitData["items"] as $itemName => $itemData) {
+                $item = StringToItemParser::getInstance()->parse($itemName);
+
+                if ($item === null) {
+                    $item = \pocketmine\item\ItemFactory::get(\pocketmine\item\ItemIds::AIR);
                 }
 
-                $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
-            } else {
-                $sender->sendMessage(TextFormat::RED . "The 'default' kit is not configured.");
+                if (isset($itemData["enchantments"])) {
+                    foreach ($itemData["enchantments"] as $enchantmentName => $level) {
+                        $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
+                        if ($enchantment !== null) {
+                            $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
+                            $item->addEnchantment($enchantmentInstance);
+                        }
+                    }
+                }
+
+                if (isset($itemData["quantity"])) {
+                    $item->setCount((int) $itemData["quantity"]);
+                }
+                if (isset($itemData["name"])) {
+                    $item->setCustomName(TextFormat::colorize($itemData["name"]));
+                }
+
+                $items[] = $item;
             }
-        } else {
-            $sender->sendMessage("This command can only be used in-game.");
+
+            $inventory->addItem(...$items);
         }
-        return true;
     }
 }
