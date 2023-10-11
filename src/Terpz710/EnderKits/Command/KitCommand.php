@@ -9,7 +9,6 @@ use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
-use pocketmine\item\VanillaItems;
 use pocketmine\item\enchantment\StringToEnchantmentParser;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\enchantment\EnchantmentInstance;
@@ -45,8 +44,15 @@ class KitCommand extends Command implements PluginOwned {
 
                 if (isset($kitConfig[$kitName])) {
                     $kitData = $kitConfig[$kitName];
-                    $this->applyKit($sender, $kitData);
-                    $sender->sendMessage(TextFormat::GREEN . "You received the kit '$kitName'!");
+
+                    $requiredPermission = $kitData['permissions'] ?? null;
+
+                    if ($requiredPermission === "ALL" || ($requiredPermission === "VIP" && $sender->isOp())) {
+                        $this->applyKit($sender, $kitData);
+                        $sender->sendMessage(TextFormat::GREEN . "You received the kit '$kitName'!");
+                    } else {
+                        $sender->sendMessage(TextFormat::RED . "You don't have permission to use this kit.");
+                    }
                 } else {
                     $sender->sendMessage(TextFormat::RED . "Kit '$kitName' does not exist.");
                 }
@@ -128,7 +134,7 @@ class KitCommand extends Command implements PluginOwned {
                 }
 
                 if ($item !== null) {
-                $item->setCount((int) $itemData["quantity"]);
+                    $item->setCount((int) $itemData["quantity"]);
                 }
                 if (isset($itemData["name"])) {
                     $item->setCustomName(TextFormat::colorize($itemData["name"]));
