@@ -9,13 +9,13 @@ use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
-use pocketmine\item\Item;
 use pocketmine\utils\TextFormat;
 use pocketmine\item\enchantment\StringToEnchantmentParser;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\utils\Config;
+use Terpz710\EnderKits\Task\KitCoolDownTask;
 
 class KitCommand extends Command implements PluginOwned {
 
@@ -23,11 +23,14 @@ class KitCommand extends Command implements PluginOwned {
     private $plugin;
     /** @var Config */
     private $kitsConfig;
+    /** @var KitCoolDownTask */
+    private $coolDownTask;
 
-    public function __construct(Plugin $plugin, Config $kitsConfig) {
+    public function __construct(Plugin $plugin, Config $kitsConfig, KitCoolDownTask $coolDownTask) {
         parent::__construct("kit", "Get a kit");
         $this->plugin = $plugin;
         $this->kitsConfig = $kitsConfig;
+        $this->coolDownTask = $coolDownTask;
         $this->setPermission("enderkits.cmd");
     }
 
@@ -41,8 +44,9 @@ class KitCommand extends Command implements PluginOwned {
 
             if (isset($kitConfig["default"])) {
                 $kitData = $kitConfig["default"];
+                $kitName = "default";
 
-                if ($this->isKitOnCooldown($sender, "default")) {
+                if ($this->isKitOnCooldown($sender, $kitName)) {
                     return true;
                 }
 
@@ -115,7 +119,7 @@ class KitCommand extends Command implements PluginOwned {
                     $inventory->addItem(...$items);
                 }
 
-                $this->updateKitCooldown($sender, "default", $kitData["cooldown"]);
+                $this->updateKitCooldown($sender, $kitName);
 
                 $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
             } else {
@@ -128,26 +132,10 @@ class KitCommand extends Command implements PluginOwned {
     }
 
     private function isKitOnCooldown(Player $player, string $kitName): bool {
-        $playerName = $player->getName();
-        if ($this->kitsConfig->exists("cooldowns.$playerName.$kitName")) {
-            $lastUsage = $this->kitsConfig->get("cooldowns.$playerName.$kitName");
-            $cooldown = $this->kitsConfig->get("default.cooldown");
-            $timePassed = time() - $lastUsage;
-            if ($timePassed < $cooldown) {
-                $remainingTime = $cooldown - $timePassed;
-                $player->sendMessage("Kit $kitName is on cooldown. You can use it again in $remainingTime seconds.");
-                return true;
-            } else {
-                $this->kitsConfig->remove("cooldowns.$playerName.$kitName");
-                $this->kitsConfig->save();
-            }
-        }
-        return false;
+        return $this->coolDownTask->isKitOnCooldown($player, $kitName);
     }
 
-    private function updateKitCooldown(Player $player, string $kitName, int $cooldown) {
-        $playerName = $player->getName();
-        $this->kitsConfig->set("cooldowns.$playerName.$kitName", time());
-        $this->kitsConfig->save();
+    private function updateKitCooldown(Player $player, string $kitName) {
+        $this->coolDownTask->setCooldown($player, $kitName);
     }
 }
