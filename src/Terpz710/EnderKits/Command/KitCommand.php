@@ -123,7 +123,7 @@ class KitCommand extends Command implements PluginOwned {
                             $item->setCount((int) $itemData["quantity"]);
                         }
                         if (isset($itemData["name"])) {
-                            $item->setCustomName(TextFormat::colorize($itemData["name"));
+                            $item->setCustomName(TextFormat::colorize($itemData["name"]));
                         }
 
                         $items[] = $item;
