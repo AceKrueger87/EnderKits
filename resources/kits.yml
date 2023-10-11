@@ -63,4 +63,4 @@ default:
     steak:
       quantity: 32
     strength_potion:
-      quantity: 32
+      quantity: 1
