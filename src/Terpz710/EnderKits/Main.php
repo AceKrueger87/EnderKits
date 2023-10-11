@@ -7,6 +7,7 @@ namespace Terpz710\EnderKits;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use Terpz710\EnderKits\Task\CoolDownTask;
+use Terpz710\EnderKits\Command\KitCommand;
 
 class Main extends PluginBase {
 
