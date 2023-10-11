@@ -10,7 +10,8 @@ use pocketmine\player\Player;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
 use pocketmine\item\VanillaItems;
-use pocketmine\item\enchantment\Enchantment;
+use pocketmine\item\enchantment\StringToEnchantmentParser;
+use pocketmine\item\StringToItemParser;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\MainLogger;
@@ -73,12 +74,12 @@ class KitCommand extends Command implements PluginOwned {
                 if (isset($kitData["armor"][$armorType])) {
                     $armorData = $kitData["armor"][$armorType];
                     $itemString = $armorData["item"];
-                    $item = VanillaItems::fromString($itemString);
+                    $item = StringToItemParser::parse($itemString);
 
                     if ($item !== null) {
                         if (isset($armorData["enchantments"])) {
                             foreach ($armorData["enchantments"] as $enchantmentName => $level) {
-                                $enchantment = Enchantment::getByName($enchantmentName);
+                                $enchantment = StringToEnchantmentParser::parse($enchantmentName);
                                 if ($enchantment !== null) {
                                     $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
                                     $item->addEnchantment($enchantmentInstance);
@@ -107,11 +108,11 @@ class KitCommand extends Command implements PluginOwned {
             $inventory = $player->getInventory();
 
             foreach ($kitData["items"] as $itemName => $itemData) {
-                $item = VanillaItems::fromString($itemName);
+                $item = StringToItemParser::parse($itemName);
 
                 if (isset($itemData["enchantments"])) {
                     foreach ($itemData["enchantments"] as $enchantmentName => $level) {
-                        $enchantment = Enchantment::getByName($enchantmentName);
+                        $enchantment = StringToEnchantmentParser::parse($enchantmentName);
                         if ($enchantment !== null) {
                             $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
                             $item->addEnchantment($enchantmentInstance);
