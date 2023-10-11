@@ -118,5 +118,5 @@ kits:
         quantity: 8
       chicken:
         quantity: 16
-      speed_potion:
+      swiftness_potion:
         quantity: 2
