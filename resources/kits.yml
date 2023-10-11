@@ -31,7 +31,6 @@
 #       quantity: item_quantity
 #       name: "Custom Item Name"
 
-# Example kit:
 default:
   cooldown: 3600
   armor:
