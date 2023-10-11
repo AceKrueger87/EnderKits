@@ -53,6 +53,7 @@ kits:
       diamond_sword:
         enchantments:
           sharpness: 2
+        quantity: 1
       golden_apple:
         quantity: 5
       steak:
@@ -82,6 +83,7 @@ kits:
       stone_sword:
         enchantments:
           sharpness: 1
+        quantity: 1
       stone_pickaxe:
         quantity: 1
       bread:
@@ -111,6 +113,7 @@ kits:
       iron_sword:
         enchantments:
           sharpness: 3
+        quantity: 1
       carrot:
         quantity: 8
       chicken:
