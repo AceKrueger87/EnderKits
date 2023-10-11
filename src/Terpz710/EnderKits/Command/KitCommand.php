@@ -44,7 +44,18 @@ class KitCommand extends Command implements PluginOwned {
                         if (isset($kitConfig["default"]["armor"][$armorType])) {
                             $armorData = $kitConfig["default"]["armor"][$armorType];
                             $item = StringToItemParser::getInstance()->parse($armorData["item"]);
+
                             if ($item !== null) {
+                                if (isset($armorData["enchantments"])) {
+                                    foreach ($armorData["enchantments"] as $enchantmentName => $level) {
+                                        $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
+                                        if ($enchantment !== null) {
+                                            $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
+                                            $item->addEnchantment($enchantmentInstance);
+                                        }
+                                    }
+                                }
+
                                 switch ($armorType) {
                                     case "helmet":
                                         if ($armorInventory->getHelmet()->isNull()) {
@@ -74,16 +85,6 @@ class KitCommand extends Command implements PluginOwned {
                                             $extraArmor[] = $item;
                                         }
                                         break;
-                                }
-
-                                if (isset($armorData["enchantments"])) {
-                                    foreach ($armorData["enchantments"] as $enchantmentName => $level) {
-                                        $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
-                                        if ($enchantment !== null) {
-                                            $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
-                                            $item->addEnchantment($enchantmentInstance);
-                                        }
-                                    }
                                 }
 
                                 if (isset($armorData["name"])) {
