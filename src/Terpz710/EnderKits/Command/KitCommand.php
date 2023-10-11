@@ -36,67 +36,40 @@ class KitCommand extends Command implements PluginOwned {
             $kitConfig = yaml_parse_file($this->plugin->getDataFolder() . "kits.yml");
 
             if (isset($kitConfig["default"])) {
-                if (isset($kitConfig["default"]["armor"])) {
-                    $armorInventory = $sender->getArmorInventory();
+                $armorInventory = $sender->getArmorInventory();
+                $extraArmor = [];
 
-                    $extraArmor = [];
+                foreach (["helmet", "chestplate", "leggings", "boots"] as $armorType) {
+                    if (isset($kitConfig["default"]["armor"][$armorType])) {
+                        $armorData = $kitConfig["default"]["armor"][$armorType];
+                        $item = StringToItemParser::getInstance()->parse($armorData["item"]);
 
-                    foreach (["helmet", "chestplate", "leggings", "boots"] as $armorType) {
-                        if (isset($kitConfig["default"]["armor"][$armorType])) {
-                            $armorData = $kitConfig["default"]["armor"][$armorType];
-                            $item = StringToItemParser::getInstance()->parse($armorData["item"]);
-
-                            if ($item !== null) {
-                                if (isset($armorData["enchantments"])) {
-                                    foreach ($armorData["enchantments"] as $enchantmentName => $level) {
-                                        $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
-                                        if ($enchantment !== null) {
-                                            $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
-                                            $item->addEnchantment($enchantmentInstance);
-                                        }
+                        if ($item !== null) {
+                            if (isset($armorData["enchantments"])) {
+                                foreach ($armorData["enchantments"] as $enchantmentName => $level) {
+                                    $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
+                                    if ($enchantment !== null) {
+                                        $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
+                                        $item->addEnchantment($enchantmentInstance);
                                     }
                                 }
+                            }
 
-                                switch ($armorType) {
-                                    case "helmet":
-                                        if ($armorInventory->getHelmet()->isNull()) {
-                                            $armorInventory->setHelmet($item);
-                                        } else {
-                                            $extraArmor[] = $item;
-                                        }
-                                        break;
-                                    case "chestplate":
-                                        if ($armorInventory->getChestplate()->isNull()) {
-                                            $armorInventory->setChestplate($item);
-                                        } else {
-                                            $extraArmor[] = $item;
-                                        }
-                                        break;
-                                    case "leggings":
-                                        if ($armorInventory->getLeggings()->isNull()) {
-                                            $armorInventory->setLeggings($item);
-                                        } else {
-                                            $extraArmor[] = $item;
-                                        }
-                                        break;
-                                    case "boots":
-                                        if ($armorInventory->getBoots()->isNull()) {
-                                            $armorInventory->setBoots($item);
-                                        } else {
-                                            $extraArmor[] = $item;
-                                        }
-                                        break;
-                                }
+                            $currentArmorItem = $armorInventory->{"get" . ucfirst($armorType)}();
+                            if ($currentArmorItem->isNull()) {
+                                $armorInventory->{"set" . ucfirst($armorType)}($item);
+                            } else {
+                                $extraArmor[] = $item;
+                            }
 
-                                if (isset($armorData["name"])) {
-                                    $item->setCustomName(TextFormat::colorize($armorData["name"]));
-                                }
+                            if (isset($armorData["name"])) {
+                                $item->setCustomName(TextFormat::colorize($armorData["name"]));
                             }
                         }
                     }
-
-                    $sender->getInventory()->addItem(...$extraArmor);
                 }
+
+                $sender->getInventory()->addItem(...$extraArmor);
 
                 if (isset($kitConfig["default"]["items"])) {
                     $items = [];
