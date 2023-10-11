@@ -6,13 +6,18 @@ namespace Terpz710\EnderKits;
 
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
-use Terpz710\EnderKits\Task\CoolDownTask;
+use Terpz710\EnderKits\Task\KitCoolDownTask;
 use Terpz710\EnderKits\Command\KitCommand;
 
 class Main extends PluginBase {
 
     public function onEnable(): void {
-        $this->getServer()->getCommandMap()->register("kit", new KitCommand($this, new Config($this->getDataFolder() . "kits.yml", Config::YAML)));
-        $this->getScheduler()->scheduleRepeatingTask(new CoolDownTask($this, new Config($this->getDataFolder() . "kits.yml", Config::YAML)), 20 * 60);
+        $kitsConfig = new Config($this->getDataFolder() . "kits.yml", Config::YAML);
+        $kitCommand = new KitCommand($this, $kitsConfig);
+        $this->getServer()->getCommandMap()->register("kit", $kitCommand);
+
+        $cooldownsConfig = new Config($this->getDataFolder() . "cooldowns.yml", Config::YAML);
+        $coolDownTask = new KitCoolDownTask($this, $kitsConfig, $cooldownsConfig);
+        $this->getScheduler()->scheduleRepeatingTask($coolDownTask, 20 * 60); // Run every minute (adjust as needed)
     }
 }
