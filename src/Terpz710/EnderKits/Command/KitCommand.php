@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Terpz710\EnderKits\Command;
 
 use pocketmine\command\Command;
-use pocketmine\command.CommandSender;
+use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
