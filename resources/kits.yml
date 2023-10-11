@@ -2,7 +2,6 @@
 # To create a kit, follow this structure:
 #
 # kit_name:
-#   cooldown: 3600  # Cooldown in seconds (3600 seconds = 1 hour)
 #   armor:  # Armor items
 #     helmet:
 #       item: "item_id"  # The item ID for the helmet (e.g., "diamond_helmet")
@@ -32,33 +31,36 @@
 #       name: "Custom Item Name"
 
 default:
-  cooldown: 3600
   armor:
     helmet:
       item: "diamond_helmet"
       enchantments:
         protection: 2
-      name: "Diamond Helmet"
+      name: "Default Helmet"
     chestplate:
       item: "diamond_chestplate"
       enchantments:
         protection: 2
-      name: "Diamond Chestplate"
+      name: "Default Chestplate"
     leggings:
       item: "diamond_leggings"
       enchantments:
         protection: 2
-      name: "Diamond Leggings"
+      name: "Default Leggings"
     boots:
       item: "diamond_boots"
       enchantments:
         protection: 2
-      name: "Diamond Boots"
+      name: "Default Boots"
   items:
     diamond_sword:
       enchantments:
         sharpness: 2
       quantity: 1
-      name: "Diamond Sword"
+      name: "Default Sword"
     golden_apple:
       quantity: 5
+    steak:
+      quantity: 32
+    strength_potion:
+      quantity: 32
