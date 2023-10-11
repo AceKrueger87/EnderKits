@@ -23,7 +23,7 @@ class KitCommand extends Command implements PluginOwned {
     private $plugin;
     /** @var Config */
     private $kitsConfig;
-    /** @var KitCoolDownTask */
+    /** @var CoolDownTask */
     private $coolDownTask;
  
     public function __construct(Plugin $plugin, Config $kitsConfig, CoolDownTask $coolDownTask) {
