@@ -15,7 +15,7 @@ use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\utils\Config;
-use Terpz710\EnderKits\Task\KitCoolDownTask;
+use Terpz710\EnderKits\Task\CoolDownTask;
 
 class KitCommand extends Command implements PluginOwned {
 
@@ -25,8 +25,8 @@ class KitCommand extends Command implements PluginOwned {
     private $kitsConfig;
     /** @var KitCoolDownTask */
     private $coolDownTask;
-
-    public function __construct(Plugin $plugin, Config $kitsConfig, KitCoolDownTask $coolDownTask) {
+ 
+    public function __construct(Plugin $plugin, Config $kitsConfig, CoolDownTask $coolDownTask) {
         parent::__construct("kit", "Get a kit");
         $this->plugin = $plugin;
         $this->kitsConfig = $kitsConfig;
