@@ -30,37 +30,90 @@
 #       quantity: item_quantity
 #       name: "Custom Item Name"
 
-default:
-  armor:
-    helmet:
-      item: "diamond_helmet"
-      enchantments:
-        protection: 2
-      name: "Default Helmet"
-    chestplate:
-      item: "diamond_chestplate"
-      enchantments:
-        protection: 2
-      name: "Default Chestplate"
-    leggings:
-      item: "diamond_leggings"
-      enchantments:
-        protection: 2
-      name: "Default Leggings"
-    boots:
-      item: "diamond_boots"
-      enchantments:
-        protection: 2
-      name: "Default Boots"
-  items:
-    diamond_sword:
-      enchantments:
-        sharpness: 2
-      quantity: 1
-      name: "Default Sword"
-    golden_apple:
-      quantity: 5
-    steak:
-      quantity: 32
-    strength_potion:
-      quantity: 1
+kits:
+  test:
+    armor:
+      helmet:
+        item: "diamond_helmet"
+        enchantments:
+          protection: 2
+      chestplate:
+        item: "diamond_chestplate"
+        enchantments:
+          protection: 2
+      leggings:
+        item: "diamond_leggings"
+        enchantments:
+          protection: 2
+      boots:
+        item: "diamond_boots"
+        enchantments:
+          protection: 2
+    items:
+      diamond_sword:
+        enchantments:
+          sharpness: 2
+      golden_apple:
+        quantity: 5
+      steak:
+        quantity: 32
+      strength_potion:
+        quantity: 1
+
+  starter:
+    armor:
+      helmet:
+        item: "iron_helmet"
+        enchantments:
+          protection: 1
+      chestplate:
+        item: "iron_chestplate"
+        enchantments:
+          protection: 1
+      leggings:
+        item: "iron_leggings"
+        enchantments:
+          protection: 1
+      boots:
+        item: "iron_boots"
+        enchantments:
+          protection: 1
+    items:
+      stone_sword:
+        enchantments:
+          sharpness: 1
+      apple:
+        quantity: 10
+      bread:
+        quantity: 32
+      potion:
+        quantity: 2
+
+  vip:
+    armor:
+      helmet:
+        item: "chainmail_helmet"
+        enchantments:
+          protection: 3
+      chestplate:
+        item: "chainmail_chestplate"
+        enchantments:
+          protection: 3
+      leggings:
+        item: "chainmail_leggings"
+        enchantments:
+          protection: 3
+      boots:
+        item: "chainmail_boots"
+        enchantments:
+          protection: 3
+    items:
+      iron_sword:
+        enchantments:
+          sharpness: 3
+      carrot:
+        quantity: 8
+      chicken:
+        quantity: 16
+      speed_potion:
+        quantity: 2
