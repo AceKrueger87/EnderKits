@@ -100,7 +100,6 @@ class KitCommand extends Command implements PluginOwned {
                 if (isset($kitConfig["default"]["items"])) {
                     $items = [];
                     $inventory = $sender->getInventory();
-                    $item = null; // Define $item with a default value
 
                     foreach ($kitConfig["default"]["items"] as $itemName => $itemData) {
                         $item = StringToItemParser::getInstance()->parse($itemName);
@@ -131,7 +130,7 @@ class KitCommand extends Command implements PluginOwned {
                         }
                     }
 
-                    $inventory->addItem($item);
+                    $inventory->addItem(...$items);
                 }
 
                 $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
