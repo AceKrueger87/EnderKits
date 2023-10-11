@@ -130,7 +130,7 @@ class KitCommand extends Command implements PluginOwned {
                         }
                     }
 
-                    $inventory->addItem(...$items);
+                    $inventory->addItem($item);
                 }
 
                 $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
