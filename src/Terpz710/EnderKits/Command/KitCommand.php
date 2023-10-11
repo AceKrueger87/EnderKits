@@ -23,7 +23,7 @@ class KitCommand extends Command implements PluginOwned {
     private $plugin;
 
     public function __construct(Plugin $plugin) {
-        parent::__construct("kit", "Get a kit");
+        parent::__construct("kit", "Get a kit", "/kit <kitName>");
         $this->plugin = $plugin;
         $this->setPermission("enderkits.cmd");
     }
@@ -34,17 +34,24 @@ class KitCommand extends Command implements PluginOwned {
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
         if ($sender instanceof Player) {
-            $kitConfig = $this->loadKitConfig();
+            if (count($args) === 1) {
+                $kitName = $args[0];
+                $kitConfig = $this->loadKitConfig();
 
-            if ($kitConfig === null) {
-                $sender->sendMessage(TextFormat::RED . "Kit configuration is missing or invalid.");
-                return true;
-            }
+                if ($kitConfig === null) {
+                    $sender->sendMessage(TextFormat::RED . "Kit configuration is missing or invalid.");
+                    return true;
+                }
 
-            foreach ($kitConfig as $kitName => $kitData) {
-                $this->applyKit($sender, $kitData);
-
-                $sender->sendMessage(TextFormat::GREEN . "You received the kit '$kitName'!");
+                if (isset($kitConfig[$kitName])) {
+                    $kitData = $kitConfig[$kitName];
+                    $this->applyKit($sender, $kitData);
+                    $sender->sendMessage(TextFormat::GREEN . "You received the kit '$kitName'!");
+                } else {
+                    $sender->sendMessage(TextFormat::RED . "Kit '$kitName' does not exist.");
+                }
+            } else {
+                $sender->sendMessage("Usage: /kit <kitName>");
             }
         } else {
             $sender->sendMessage("This command can only be used in-game.");
