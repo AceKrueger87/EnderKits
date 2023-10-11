@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Terpz710\EnderKits\Task;
 
 use pocketmine\scheduler\Task;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\utils\Config;
 use pocketmine\plugin\Plugin;
 
@@ -21,7 +21,7 @@ class CoolDownTask extends Task {
         $this->config = $config;
     }
 
-    public function onRun(int $currentTick) {
+    public function onRun(): void {
         $kits = $this->config->getAll();
         foreach ($kits as $kitName => $kitData) {
             if (!is_array($kitData) || !isset($kitData["cooldown"])) {
