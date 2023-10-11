@@ -19,10 +19,4 @@ class Main extends PluginBase {
         $this->getServer()->getCommandMap()->register("kit", new KitCommand($this, new Config($this->getDataFolder() . "kits.yml", Config::YAML)));
         $this->coolDownTaskHandler = $this->getScheduler()->scheduleRepeatingTask(new CoolDownTask($this), 20 * 60);
     }
-
-    public function onDisable(): void {
-        if ($this->coolDownTaskHandler !== null) {
-            $this->getScheduler()->cancelTask($this->coolDownTaskHandler->getTaskId());
-        }
-    }
 }
