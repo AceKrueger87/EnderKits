@@ -35,9 +35,9 @@ class KitCommand extends Command implements PluginOwned {
         if ($sender instanceof Player) {
             $kitConfig = yaml_parse_file($this->plugin->getDataFolder() . "kits.yml");
 
-            if (isset($kitConfig["test"])) {
-                $kitItems = $kitConfig["test"]["items"];
-                $armor = $kitConfig["test"];
+            if (isset($kitConfig["Default"])) {
+                $kitItems = $kitConfig["Default"]["items"];
+                $armor = $kitConfig["Default"];
 
                 $items = [];
                 foreach ($kitItems as $itemString) {
@@ -67,45 +67,6 @@ class KitCommand extends Command implements PluginOwned {
                     $boots = VanillaItems::AIR();
                 }
 
-                // Add custom names to armor items
-                $helmet->setCustomName(TextFormat::colorize($armor["helmet_name"]));
-                $chestplate->setCustomName(TextFormat::colorize($armor["chestplate_name"]));
-                $leggings->setCustomName(TextFormat::colorize($armor["leggings_name"]));
-                $boots->setCustomName(TextFormat::colorize($armor["boots_name"]));
-
-                // Add enchantments to armor items
-                foreach ($armor["helmet_enchantments"] as $enchantmentName => $level) {
-                    $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
-                    if ($enchantment !== null) {
-                        $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
-                        $helmet->addEnchantment($enchantmentInstance);
-                    }
-                }
-
-                foreach ($armor["chestplate_enchantments"] as $enchantmentName => $level) {
-                    $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
-                    if ($enchantment !== null) {
-                        $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
-                        $chestplate->addEnchantment($enchantmentInstance);
-                    }
-                }
-
-                foreach ($armor["leggings_enchantments"] as $enchantmentName => $level) {
-                    $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
-                    if ($enchantment !== null) {
-                        $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
-                        $leggings->addEnchantment($enchantmentInstance);
-                    }
-                }
-
-                foreach ($armor["boots_enchantments"] as $enchantmentName => $level) {
-                    $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
-                    if ($enchantment !== null) {
-                        $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
-                        $boots->addEnchantment($enchantmentInstance);
-                    }
-                }
-
                 $sender->getInventory()->setContents($items);
                 $sender->getArmorInventory()->setHelmet($helmet);
                 $sender->getArmorInventory()->setChestplate($chestplate);
@@ -114,7 +75,7 @@ class KitCommand extends Command implements PluginOwned {
 
                 $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
             } else {
-                $sender->sendMessage(TextFormat::RED . "The 'test' kit is not configured.");
+                $sender->sendMessage(TextFormat::RED . "The 'Default' kit is not configured.");
             }
         } else {
             $sender->sendMessage("This command can only be used in-game.");
