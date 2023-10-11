@@ -14,5 +14,6 @@ class Main extends PluginBase {
     public function onEnable(): void {
         $this->getServer()->getCommandMap()->register("kit", new KitCommand($this, new Config($this->getDataFolder() . "kits.yml", Config::YAML)));
         $this->getScheduler()->scheduleRepeatingTask(new CoolDownTask($this, new Config($this->getDataFolder() . "kits.yml", Config::YAML)), 20 * 60);
+        $this->saveResource("kits.yml");
     }
 }
