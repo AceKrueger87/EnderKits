@@ -2,6 +2,7 @@
 # To create a kit, follow this structure:
 #
 # kit_name:
+#   permissions: "VIP/ALL"  # Add the permission node required to access this kit
 #   armor:  # Armor items
 #     helmet:
 #       item: "item_id"  # The item ID for the helmet (e.g., "diamond_helmet")
@@ -32,6 +33,7 @@
 
 kits:
   test:
+    permissions: "ALL"
     armor:
       helmet:
         item: "diamond_helmet"
@@ -62,6 +64,7 @@ kits:
         quantity: 1
 
   starter:
+    permissions: "ALL"
     armor:
       helmet:
         item: "iron_helmet"
@@ -92,6 +95,7 @@ kits:
         quantity: 10
 
   vip:
+    permissions: "VIP"
     armor:
       helmet:
         item: "chainmail_helmet"
