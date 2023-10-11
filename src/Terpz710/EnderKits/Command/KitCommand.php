@@ -39,31 +39,26 @@ class KitCommand extends Command implements PluginOwned {
                 $kitItems = $kitConfig["default"];
 
                 $items = [];
-                foreach ($kitItems as $slot => $itemString) {
-                    $itemParts = explode(":", $itemString);
-                    $itemName = array_shift($itemParts);
+                foreach ($kitItems as $itemName => $itemData) {
                     $item = StringToItemParser::getInstance()->parse($itemName);
                     if ($item === null) {
                         $item = VanillaItems::AIR();
                     }
 
-                    while (count($itemParts) >= 2) {
-                        $enchantmentName = array_shift($itemParts);
-                        $enchantmentLevel = array_shift($itemParts);
-                        $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
-                        if ($enchantment !== null) {
-                            $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $enchantmentLevel);
-                            $item->addEnchantment($enchantmentInstance);
+                    if (isset($itemData["enchantments"])) {
+                        foreach ($itemData["enchantments"] as $enchantmentName => $level) {
+                            $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
+                            if ($enchantment !== null) {
+                                $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
+                                $item->addEnchantment($enchantmentInstance);
+                            }
                         }
                     }
-
-                    if (isset($kitItems[$slot])) {
-                        if (isset($kitItems[$slot]["quantity"])) {
-                            $item->setCount((int) $kitItems[$slot]["quantity"]);
-                        }
-                        if (isset($kitItems[$slot]["name"])) {
-                            $item->setCustomName(TextFormat::colorize($kitItems[$slot]["name"]));
-                        }
+                    if (isset($itemData["quantity"])) {
+                        $item->setCount((int) $itemData["quantity"]);
+                    }
+                    if (isset($itemData["name"])) {
+                        $item->setCustomName(TextFormat::colorize($itemData["name"]));
                     }
 
                     $items[] = $item;
