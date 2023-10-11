@@ -120,8 +120,8 @@ class KitCommand extends Command implements PluginOwned {
                     }
                 }
 
-                if (isset($itemData["quantity"])) {
-                    $item->setCount((int) $itemData["quantity"]);
+                if ($item !== null) {
+                $item->setCount((int) $itemData["quantity"]);
                 }
                 if (isset($itemData["name"])) {
                     $item->setCustomName(TextFormat::colorize($itemData["name"]));
