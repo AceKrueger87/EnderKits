@@ -1,8 +1,30 @@
-Default:
+default:
+  armor:
+    helmet:
+      item: "diamond_helmet"
+      enchantments:
+        protection: 2
+      name: "Diamond Helmet"
+    chestplate:
+      item: "diamond_chestplate"
+      enchantments:
+        protection: 2
+      name: "Diamond Chestplate"
+    leggings:
+      item: "diamond_leggings"
+      enchantments:
+        protection: 2
+      name: "Diamond Leggings"
+    boots:
+      item: "diamond_boots"
+      enchantments:
+        protection: 2
+      name: "Diamond Boots"
   items:
-    - "diamond_pickaxe:1:Efficiency Pickaxe:efficiency:5:unbreaking:3"
-    - "golden_apple:5:God Apples"
-  helmet: "diamond_helmet:1:Diamond Helmet:protection:10:unbreaking:10"
-  chestplate: "diamond_chestplate:1:Diamond Chestplate:protection:10:unbreaking:10"
-  leggings: "diamond_leggings:1:Diamond Leggings:protection:10:unbreaking:10"
-  boots: "diamond_boots:1:Diamond Boots:protection:10:unbreaking:10"
+    diamond_sword:
+      enchantments:
+        sharpness: 2
+      quantity: 1
+      name: "Diamond Sword"
+    golden_apple:
+      quantity: 5
