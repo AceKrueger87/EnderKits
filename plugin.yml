@@ -12,3 +12,7 @@ permissions:
   enderkits.kits:
     description: "Enderkits Perm"
     default: true
+  enderkits.vip:
+    description: "Enderkits Perm"
+    default: op
+
