@@ -41,74 +41,67 @@ class KitCommand extends Command implements PluginOwned {
 
                 $items = [];
                 foreach ($kitItems as $itemString) {
-                    $itemData = explode(":", $itemString);
-                    $item = new Item((int)$itemData[0], (int)$itemData[1]);
-                    $item->setCustomName(TextFormat::colorize($itemData[2]));
-
-                    for ($i = 3; $i < count($itemData); $i += 2) {
-                        $enchantmentName = $itemData[$i];
-                        $enchantmentLevel = (int)$itemData[$i + 1];
-                        $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
-                        if ($enchantment !== null) {
-                            $enchantmentInstance = new EnchantmentInstance($enchantment, $enchantmentLevel);
-                            $item->addEnchantment($enchantmentInstance);
-                        }
+                    $item = StringToItemParser::getInstance()->parse($itemString);
+                    if ($item === null) {
+                        $item = VanillaItems::AIR();
                     }
 
                     $items[] = $item;
                 }
 
-                $helmetData = explode(":", $armor["helmet"]);
-                $chestplateData = explode(":", $armor["chestplate"]);
-                $leggingsData = explode(":", $armor["leggings"]);
-                $bootsData = explode(":", $armor["boots"]);
+                $helmet = StringToItemParser::getInstance()->parse($armor["helmet"]);
+                $chestplate = StringToItemParser::getInstance()->parse($armor["chestplate"]);
+                $leggings = StringToItemParser::getInstance()->parse($armor["leggings"]);
+                $boots = StringToItemParser::getInstance()->parse($armor["boots"]);
 
-                $helmet = new Item((int)$helmetData[0], (int)$helmetData[1]);
-                $chestplate = new Item((int)$chestplateData[0], (int)$chestplateData[1]);
-                $leggings = new Item((int)$leggingsData[0], (int)$leggingsData[1]);
-                $boots = new Item((int)$bootsData[0], (int)$bootsData[1]);
+                if ($helmet === null) {
+                    $helmet = VanillaItems::AIR();
+                }
+                if ($chestplate === null) {
+                    $chestplate = VanillaItems::AIR();
+                }
+                if ($leggings === null) {
+                    $leggings = VanillaItems::AIR();
+                }
+                if ($boots === null) {
+                    $boots = VanillaItems::AIR();
+                }
 
-                $helmet->setCustomName(TextFormat::colorize($helmetData[2]));
-                $chestplate->setCustomName(TextFormat::colorize($chestplateData[2]));
-                $leggings->setCustomName(TextFormat::colorize($leggingsData[2]));
-                $boots->setCustomName(TextFormat::colorize($bootsData[2]));
+                // Add custom names to armor items
+                $helmet->setCustomName(TextFormat::colorize($armor["helmet_name"]));
+                $chestplate->setCustomName(TextFormat::colorize($armor["chestplate_name"]));
+                $leggings->setCustomName(TextFormat::colorize($armor["leggings_name"]));
+                $boots->setCustomName(TextFormat::colorize($armor["boots_name"]));
 
-                for ($i = 3; $i < count($helmetData); $i += 2) {
-                    $enchantmentName = $helmetData[$i];
-                    $enchantmentLevel = (int)$helmetData[$i + 1];
+                // Add enchantments to armor items
+                foreach ($armor["helmet_enchantments"] as $enchantmentName => $level) {
                     $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
                     if ($enchantment !== null) {
-                        $enchantmentInstance = new EnchantmentInstance($enchantment, $enchantmentLevel);
+                        $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
                         $helmet->addEnchantment($enchantmentInstance);
                     }
                 }
 
-                for ($i = 3; $i < count($chestplateData); $i += 2) {
-                    $enchantmentName = $chestplateData[$i];
-                    $enchantmentLevel = (int)$chestplateData[$i + 1];
+                foreach ($armor["chestplate_enchantments"] as $enchantmentName => $level) {
                     $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
                     if ($enchantment !== null) {
-                        $enchantmentInstance = new EnchantmentInstance($enchantment, $enchantmentLevel);
+                        $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
                         $chestplate->addEnchantment($enchantmentInstance);
                     }
                 }
 
-                for ($i = 3; $i < count($leggingsData); $i += 2) {
-                    $enchantmentName = $leggingsData[$i];
-                    $enchantmentLevel = (int)$leggingsData[$i + 1];
+                foreach ($armor["leggings_enchantments"] as $enchantmentName => $level) {
                     $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
                     if ($enchantment !== null) {
-                        $enchantmentInstance = new EnchantmentInstance($enchantment, $enchantmentLevel);
+                        $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
                         $leggings->addEnchantment($enchantmentInstance);
                     }
                 }
 
-                for ($i = 3; $i < count($bootsData); $i += 2) {
-                    $enchantmentName = $bootsData[$i];
-                    $enchantmentLevel = (int)$bootsData[$i + 1];
+                foreach ($armor["boots_enchantments"] as $enchantmentName => $level) {
                     $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
                     if ($enchantment !== null) {
-                        $enchantmentInstance = new EnchantmentInstance($enchantment, $enchantmentLevel);
+                        $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
                         $boots->addEnchantment($enchantmentInstance);
                     }
                 }
