@@ -6,12 +6,11 @@ namespace Terpz710\EnderKits;
 
 use pocketmine\plugin\PluginBase;
 use Terpz710\EnderKits\Command\KitCommand;
-use Terpz710\EnderKits\Task\CoolDownTask;
 
-class EnderKitsPlugin extends PluginBase {
-    
+class Main extends PluginBase {
+
     public function onEnable(): void {
-        $this->getServer()->getCommandMap()->register("kit", new KitCommand($this));
-        $this->getScheduler()->scheduleRepeatingTask(new CoolDownTask($this), 20 * 60);
+        $this->getServer()->getCommandMap()->register("kit", new Command\KitCommand($this));
+        $this->saveResource("kits.yml");
     }
 }
