@@ -8,6 +8,7 @@ use pocketmine\player\Player;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
 use pocketmine\utils\TextFormat;
+use pocketmine\utils\Config;
 
 class KitsCommand extends Command implements PluginOwned {
 
