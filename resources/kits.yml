@@ -32,7 +32,7 @@
 #       name: "Custom Item Name"
 
 # Example kit:
-defualt:
+default:
   cooldown: 3600
   armor:
     helmet:
