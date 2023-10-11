@@ -35,27 +35,63 @@ class KitCommand extends Command implements PluginOwned {
         if ($sender instanceof Player) {
             $kitConfig = yaml_parse_file($this->plugin->getDataFolder() . "kits.yml");
 
-            if (isset($kitConfig["Default"])) {
-                $kitData = $kitConfig["Default"];
-                
-                foreach ($kitData["items"] as $itemString) {
-                    $item = StringToItemParser::getInstance()->parse($itemString);
-                    if ($item !== null) {
-                        $sender->getInventory()->addItem($item);
+            if (isset($kitConfig["default"])) {
+                if (isset($kitConfig["default"]["armor"])) {
+                    foreach ($kitConfig["default"]["armor"] as $armorType => $armorData) {
+                        $item = StringToItemParser::getInstance()->parse($armorData["item"]);
+                        if ($item !== null) {
+                            $sender->getArmorInventory()->setArmorItem($armorType, $item);
+
+                            if (isset($armorData["enchantments"])) {
+                                foreach ($armorData["enchantments"] as $enchantmentName => $level) {
+                                    $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
+                                    if ($enchantment !== null) {
+                                        $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
+                                        $item->addEnchantment($enchantmentInstance);
+                                    }
+                                }
+                            }
+
+                            if (isset($armorData["name"])) {
+                                $item->setCustomName(TextFormat::colorize($armorData["name"]));
+                            }
+                        }
                     }
                 }
 
-                foreach (["helmet", "chestplate", "leggings", "boots"] as $armorType) {
-                    $armorString = $kitData[$armorType];
-                    $armorItem = StringToItemParser::getInstance()->parse($armorString);
-                    if ($armorItem !== null) {
-                        $sender->getArmorInventory()->setItem($armorType, $armorItem);
+                if (isset($kitConfig["default"]["items"])) {
+                    $items = [];
+                    foreach ($kitConfig["default"]["items"] as $itemName => $itemData) {
+                        $item = StringToItemParser::getInstance()->parse($itemName);
+                        if ($item === null) {
+                            $item = VanillaItems::AIR();
+                        }
+
+                        if (isset($itemData["enchantments"])) {
+                            foreach ($itemData["enchantments"] as $enchantmentName => $level) {
+                                $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
+                                if ($enchantment !== null) {
+                                    $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
+                                    $item->addEnchantment($enchantmentInstance);
+                                }
+                            }
+                        }
+                        if (isset($itemData["quantity"])) {
+                            $item->setCount((int) $itemData["quantity"]);
+                        }
+                        if (isset($itemData["name"])) {
+                            $item->setCustomName(TextFormat::colorize($itemData["name"]));
+                        }
+
+                        $items[] = $item;
                     }
+
+                    $sender->getInventory()->setContents($items);
                 }
 
                 $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
             } else {
-                $sender->sendMessage(TextFormat::RED . "The 'Default' kit is not configured.");
+                $sender->sendMessage(TextFormat::RED . "The 'default' kit is not configured.");
             }
         } else {
             $sender->sendMessage("This command can only be used in-game.");
