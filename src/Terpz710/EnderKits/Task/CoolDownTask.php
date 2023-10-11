@@ -7,16 +7,16 @@ namespace Terpz710\EnderKits\Task;
 use pocketmine\scheduler\Task;
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
-use pocketmine\plugin\Plugin;
+use pocketmine\plugin\PluginBase;
 
 class CoolDownTask extends Task {
 
     /** @var Config */
     private $config;
-    /** @var Plugin */
+    /** @var PluginBase */
     private $plugin;
 
-    public function __construct(Plugin $plugin, Config $config) {
+    public function __construct(PluginBase $plugin, Config $config) {
         $this->plugin = $plugin;
         $this->config = $config;
     }
