@@ -15,6 +15,7 @@ use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\MainLogger;
 use pocketmine\utils\Config;
+use pocketmine\permission\DefaultPermissions;
 
 class KitCommand extends Command implements PluginOwned {
 
