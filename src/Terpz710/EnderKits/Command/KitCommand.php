@@ -38,6 +38,7 @@ class KitCommand extends Command implements PluginOwned {
             if (isset($kitConfig["default"])) {
                 if (isset($kitConfig["default"]["armor"])) {
                     $armorInventory = $sender->getArmorInventory();
+                    $extraArmor = [];
 
                     foreach (["helmet", "chestplate", "leggings", "boots"] as $armorType) {
                         if (isset($kitConfig["default"]["armor"][$armorType])) {
@@ -46,16 +47,32 @@ class KitCommand extends Command implements PluginOwned {
                             if ($item !== null) {
                                 switch ($armorType) {
                                     case "helmet":
-                                        $armorInventory->setHelmet($item);
+                                        if ($armorInventory->getHelmet()->isNull()) {
+                                            $armorInventory->setHelmet($item);
+                                        } else {
+                                            $extraArmor[] = $item;
+                                        }
                                         break;
                                     case "chestplate":
-                                        $armorInventory->setChestplate($item);
+                                        if ($armorInventory->getChestplate()->isNull()) {
+                                            $armorInventory->setChestplate($item);
+                                        } else {
+                                            $extraArmor[] = $item;
+                                        }
                                         break;
                                     case "leggings":
-                                        $armorInventory->setLeggings($item);
+                                        if ($armorInventory->getLeggings()->isNull()) {
+                                            $armorInventory->setLeggings($item);
+                                        } else {
+                                            $extraArmor[] = $item;
+                                        }
                                         break;
                                     case "boots":
-                                        $armorInventory->setBoots($item);
+                                        if ($armorInventory->getBoots()->isNull()) {
+                                            $armorInventory->setBoots($item);
+                                        } else {
+                                            $extraArmor[] = $item;
+                                        }
                                         break;
                                 }
 
@@ -75,12 +92,17 @@ class KitCommand extends Command implements PluginOwned {
                             }
                         }
                     }
+
+                    $sender->getInventory()->addItem(...$extraArmor);
                 }
 
                 if (isset($kitConfig["default"]["items"])) {
                     $items = [];
+                    $inventory = $sender->getInventory();
+
                     foreach ($kitConfig["default"]["items"] as $itemName => $itemData) {
                         $item = StringToItemParser::getInstance()->parse($itemName);
+
                         if ($item === null) {
                             $item = VanillaItems::AIR();
                         }
@@ -94,6 +116,7 @@ class KitCommand extends Command implements PluginOwned {
                                 }
                             }
                         }
+
                         if (isset($itemData["quantity"])) {
                             $item->setCount((int) $itemData["quantity"]);
                         }
@@ -101,10 +124,12 @@ class KitCommand extends Command implements PluginOwned {
                             $item->setCustomName(TextFormat::colorize($itemData["name"]));
                         }
 
-                        $items[] = $item;
+                        if (!$inventory->contains($item)) {
+                            $items[] = $item;
+                        }
                     }
 
-                    $sender->getInventory()->setContents($items);
+                    $inventory->addItem(...$items);
                 }
 
                 $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
