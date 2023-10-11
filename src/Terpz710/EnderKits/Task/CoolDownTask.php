@@ -36,7 +36,7 @@ class CoolDownTask extends Task {
                 $cooldown = (int) $kitData["cooldown"];
                 if ($this->isKitOnCooldown($player, $kitName, $cooldown)) {
                     $remainingTime = $this->getRemainingCooldownTime($player, $kitName, $cooldown);
-                    $player->sendMessage("Kit $kitName is on cooldown. You can use it again in $remainingTime seconds.");.
+                    $player->sendMessage("Kit $kitName is on cooldown. You can use it again in $remainingTime seconds.");
                 }
             }
         }
