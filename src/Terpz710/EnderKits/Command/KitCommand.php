@@ -9,12 +9,12 @@ use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
-use pocketmine\item\StringToItemParser;
-use pocketmine\item\StringToEnchantmentParser;
+use pocketmine\item\VanillaItems;
+use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\MainLogger;
-use pocketmine\utils\yaml\Yaml;
+use pocketmine\utils\Config;
 
 class KitCommand extends Command implements PluginOwned {
 
@@ -54,30 +54,31 @@ class KitCommand extends Command implements PluginOwned {
     private function loadKitConfig() {
         $configPath = $this->plugin->getDataFolder() . "kits.yml";
         if (file_exists($configPath)) {
-            try {
-                $config = Yaml::parseFile($configPath);
-                if ($config !== null && is_array($config)) {
-                    return $config['kits'];
-                }
-            } catch (\Throwable $e) {
-                MainLogger::getLogger()->error("Error while parsing kits.yml: " . $e->getMessage());
+            $config = new Config($configPath, Config::YAML);
+            $kitData = $config->get("kits");
+
+            if ($kitData !== null && is_array($kitData)) {
+                return $kitData;
             }
         }
         return [];
     }
 
     private function applyKit(Player $player, array $kitData) {
+        $extraArmor = [];
+
         if (isset($kitData["armor"])) {
             $armorInventory = $player->getArmorInventory();
             foreach (["helmet", "chestplate", "leggings", "boots"] as $armorType) {
                 if (isset($kitData["armor"][$armorType])) {
                     $armorData = $kitData["armor"][$armorType];
-                    $item = StringToItemParser::getInstance()->parse($armorData["item"]);
+                    $itemString = $armorData["item"];
+                    $item = VanillaItems::fromString($itemString);
 
                     if ($item !== null) {
                         if (isset($armorData["enchantments"])) {
                             foreach ($armorData["enchantments"] as $enchantmentName => $level) {
-                                $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
+                                $enchantment = Enchantment::getByName($enchantmentName);
                                 if ($enchantment !== null) {
                                     $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
                                     $item->addEnchantment($enchantmentInstance);
@@ -106,15 +107,11 @@ class KitCommand extends Command implements PluginOwned {
             $inventory = $player->getInventory();
 
             foreach ($kitData["items"] as $itemName => $itemData) {
-                $item = StringToItemParser::getInstance()->parse($itemName);
-
-                if ($item === null) {
-                    $item = \pocketmine\item\ItemFactory::get(\pocketmine\item\ItemIds::AIR);
-                }
+                $item = VanillaItems::fromString($itemName);
 
                 if (isset($itemData["enchantments"])) {
                     foreach ($itemData["enchantments"] as $enchantmentName => $level) {
-                        $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
+                        $enchantment = Enchantment::getByName($enchantmentName);
                         if ($enchantment !== null) {
                             $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
                             $item->addEnchantment($enchantmentInstance);
