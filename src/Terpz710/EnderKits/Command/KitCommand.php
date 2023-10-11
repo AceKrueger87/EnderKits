@@ -43,7 +43,7 @@ class KitCommand extends Command implements PluginOwned {
                 foreach ($kitItems as $itemString) {
                     $itemData = explode(":", $itemString);
                     $item = new Item((int)$itemData[0], (int)$itemData[1]);
-                    $item->setCustomName(TextFormat::colorize($itemData[2]);
+                    $item->setCustomName(TextFormat::colorize($itemData[2]));
 
                     for ($i = 3; $i < count($itemData); $i += 2) {
                         $enchantmentName = $itemData[$i];
@@ -73,7 +73,6 @@ class KitCommand extends Command implements PluginOwned {
                 $leggings->setCustomName(TextFormat::colorize($leggingsData[2]));
                 $boots->setCustomName(TextFormat::colorize($bootsData[2]));
 
-                // Add enchantments to armor items
                 for ($i = 3; $i < count($helmetData); $i += 2) {
                     $enchantmentName = $helmetData[$i];
                     $enchantmentLevel = (int)$helmetData[$i + 1];
