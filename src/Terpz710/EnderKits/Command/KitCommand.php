@@ -47,7 +47,7 @@ class KitCommand extends Command implements PluginOwned {
 
                     $requiredPermission = $kitData['permissions'] ?? null;
 
-                    if ($requiredPermission === "ALL" || ($requiredPermission === "VIP" && $sender->isOp())) {
+                    if ($requiredPermission === "ALL" || ($requiredPermission === "VIP" && $sender->hasPermission(DefaultPermissions::ROOT_OPERATOR))) {
                         $this->applyKit($sender, $kitData);
                         $sender->sendMessage(TextFormat::GREEN . "You received the kit '$kitName'!");
                     } else {
