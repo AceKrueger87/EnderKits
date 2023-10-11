@@ -6,6 +6,9 @@ api: [5.0.0]
 description: EnderKits plugin for Pocketmine-MP.
 
 permissions:
-  enderkits.cmd:
+  enderkits.kit:
+    description: "Enderkits Perm"
+    default: true
+  enderkits.kits:
     description: "Enderkits Perm"
     default: true
