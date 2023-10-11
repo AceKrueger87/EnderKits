@@ -74,12 +74,12 @@ class KitCommand extends Command implements PluginOwned {
                 if (isset($kitData["armor"][$armorType])) {
                     $armorData = $kitData["armor"][$armorType];
                     $itemString = $armorData["item"];
-                    $item = StringToItemParser::parse($itemString);
+                    $item = StringToItemParser::getInstance()->parse($itemString);
 
                     if ($item !== null) {
                         if (isset($armorData["enchantments"])) {
                             foreach ($armorData["enchantments"] as $enchantmentName => $level) {
-                                $enchantment = StringToEnchantmentParser::parse($enchantmentName);
+                                $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
                                 if ($enchantment !== null) {
                                     $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
                                     $item->addEnchantment($enchantmentInstance);
@@ -108,11 +108,11 @@ class KitCommand extends Command implements PluginOwned {
             $inventory = $player->getInventory();
 
             foreach ($kitData["items"] as $itemName => $itemData) {
-                $item = StringToItemParser::parse($itemName);
+                $item = StringToItemParser::getInstance()->parse($itemName);
 
                 if (isset($itemData["enchantments"])) {
                     foreach ($itemData["enchantments"] as $enchantmentName => $level) {
-                        $enchantment = StringToEnchantmentParser::parse($enchantmentName);
+                        $enchantment = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
                         if ($enchantment !== null) {
                             $enchantmentInstance = new EnchantmentInstance($enchantment, (int) $level);
                             $item->addEnchantment($enchantmentInstance);
