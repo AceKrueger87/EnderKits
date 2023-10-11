@@ -25,7 +25,7 @@ class KitCommand extends Command implements PluginOwned {
     public function __construct(Plugin $plugin) {
         parent::__construct("kit", "Get a kit", "/kit <kitName>");
         $this->plugin = $plugin;
-        $this->setPermission("enderkits.cmd");
+        $this->setPermission("enderkits.kit");
     }
 
     public function getOwningPlugin(): Plugin {
