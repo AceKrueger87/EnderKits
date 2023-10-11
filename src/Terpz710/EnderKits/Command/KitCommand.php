@@ -36,42 +36,22 @@ class KitCommand extends Command implements PluginOwned {
             $kitConfig = yaml_parse_file($this->plugin->getDataFolder() . "kits.yml");
 
             if (isset($kitConfig["Default"])) {
-                $kitItems = $kitConfig["Default"]["items"];
-                $armor = $kitConfig["Default"];
-
-                $items = [];
-                foreach ($kitItems as $itemString) {
+                $kitData = $kitConfig["Default"];
+                
+                foreach ($kitData["items"] as $itemString) {
                     $item = StringToItemParser::getInstance()->parse($itemString);
-                    if ($item === null) {
-                        $item = VanillaItems::AIR();
+                    if ($item !== null) {
+                        $sender->getInventory()->addItem($item);
                     }
-
-                    $items[] = $item;
                 }
 
-                $helmet = StringToItemParser::getInstance()->parse($armor["helmet"]);
-                $chestplate = StringToItemParser::getInstance()->parse($armor["chestplate"]);
-                $leggings = StringToItemParser::getInstance()->parse($armor["leggings"]);
-                $boots = StringToItemParser::getInstance()->parse($armor["boots"]);
-
-                if ($helmet === null) {
-                    $helmet = VanillaItems::AIR();
+                foreach (["helmet", "chestplate", "leggings", "boots"] as $armorType) {
+                    $armorString = $kitData[$armorType];
+                    $armorItem = StringToItemParser::getInstance()->parse($armorString);
+                    if ($armorItem !== null) {
+                        $sender->getArmorInventory()->setItem($armorType, $armorItem);
+                    }
                 }
-                if ($chestplate === null) {
-                    $chestplate = VanillaItems::AIR();
-                }
-                if ($leggings === null) {
-                    $leggings = VanillaItems::AIR();
-                }
-                if ($boots === null) {
-                    $boots = VanillaItems::AIR();
-                }
-
-                $sender->getInventory()->setContents($items);
-                $sender->getArmorInventory()->setHelmet($helmet);
-                $sender->getArmorInventory()->setChestplate($chestplate);
-                $sender->getArmorInventory()->setLeggings($leggings);
-                $sender->getArmorInventory()->setBoots($boots);
 
                 $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
             } else {
