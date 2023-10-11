@@ -82,12 +82,12 @@ kits:
       stone_sword:
         enchantments:
           sharpness: 1
-      apple:
-        quantity: 10
+      stone_pickaxe:
+        quantity: 1
       bread:
         quantity: 32
-      potion:
-        quantity: 2
+      apple:
+        quantity: 10
 
   vip:
     armor:
