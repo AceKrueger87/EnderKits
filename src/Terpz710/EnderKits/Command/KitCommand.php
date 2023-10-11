@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Terpz710\EnderKits\Command;
 
 use pocketmine\command\Command;
-use pocketmine\command\CommandSender;
+use pocketmine\command.CommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\plugin\Plugin;
@@ -38,6 +38,7 @@ class KitCommand extends Command implements PluginOwned {
             if (isset($kitConfig["default"])) {
                 if (isset($kitConfig["default"]["armor"])) {
                     $armorInventory = $sender->getArmorInventory();
+
                     $extraArmor = [];
 
                     foreach (["helmet", "chestplate", "leggings", "boots"] as $armorType) {
@@ -122,15 +123,13 @@ class KitCommand extends Command implements PluginOwned {
                             $item->setCount((int) $itemData["quantity"]);
                         }
                         if (isset($itemData["name"])) {
-                            $item->setCustomName(TextFormat::colorize($itemData["name"]));
+                            $item->setCustomName(TextFormat::colorize($itemData["name"));
                         }
 
-                        if (!$inventory->contains($item)) {
-                            $items[] = $item;
-                        }
+                        $items[] = $item;
                     }
 
-                    $inventory->addItem($item);
+                    $inventory->addItem(...$items);
                 }
 
                 $sender->sendMessage(TextFormat::GREEN . "You received the Kit!");
